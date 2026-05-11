@@ -1,0 +1,62 @@
+import { useEffect, useState } from 'react';
+import { type } from '@tauri-apps/plugin-os';
+
+import { motion } from 'motion/react';
+import { useAppStore } from '../../store';
+import NetworkUpdateDialog from './NetworkUpdateDialog';
+import UpdateDialog from './UpdateDialog';
+import { NewBottomComponent } from './NewBottomComponent';
+import { TunnelState } from './TunnelState';
+
+const updaterEnabled = window._APP.updaterEnabled;
+const devMode = window._APP.devMode;
+const os = type();
+let compatChecked = false;
+
+function Home() {
+  const networkCompat = useAppStore((s) => s.networkCompat);
+
+  const [isDialogUpdateOpen, setIsDialogUpdateOpen] = useState(false);
+
+  useEffect(() => {
+    if (devMode || compatChecked) {
+      return;
+    }
+    if (
+      networkCompat &&
+      (networkCompat.core === false || networkCompat.tauri === false)
+    ) {
+      // if either core or tauri is not compatible, show the update dialog
+      compatChecked = true;
+      setIsDialogUpdateOpen(true);
+    }
+  }, [networkCompat]);
+
+  return (
+    <>
+      {updaterEnabled && <UpdateDialog />}
+      {os !== 'windows' && (
+        <NetworkUpdateDialog
+          isOpen={isDialogUpdateOpen}
+          onClose={() => setIsDialogUpdateOpen(false)}
+          appUpdate={!networkCompat?.tauri}
+          daemonUpdate={!networkCompat?.core}
+        />
+      )}
+      <motion.div
+        initial={{ opacity: 0, x: '-1rem' }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+        className="flex h-full flex-col"
+      >
+        <TunnelState />
+
+        <div className="flex grow flex-col justify-end">
+          <NewBottomComponent />
+        </div>
+      </motion.div>
+    </>
+  );
+}
+
+export default Home;

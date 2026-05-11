@@ -1,0 +1,21 @@
+import { Trans, useTranslation } from 'react-i18next';
+import { Welcome as WelcomeAsset } from '../../../assets';
+
+function Welcome() {
+  const { t } = useTranslation('onboarding');
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <WelcomeAsset className="h-full max-h-64 w-fit" />
+      <h1 className="text-text-primary text-2xl">{t('welcome.title')}</h1>
+      <p className="text-text-secondary text-center text-sm whitespace-pre-line">
+        <Trans
+          i18nKey="welcome.description"
+          ns="onboarding"
+          components={{ large: <span className="text-base!" /> }}
+        />
+      </p>
+    </div>
+  );
+}
+
+export default Welcome;

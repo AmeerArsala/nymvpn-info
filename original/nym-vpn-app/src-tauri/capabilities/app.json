@@ -1,0 +1,67 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "app",
+  "description": "Capability for the app main window",
+  "local": true,
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-create",
+    "core:window:allow-set-size",
+    "core:window:allow-show",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "notification:default",
+    "os:allow-platform",
+    "os:allow-version",
+    "os:allow-os-type",
+    "os:allow-family",
+    "os:allow-arch",
+    "os:allow-exe-extension",
+    "os:allow-locale",
+    "os:allow-hostname",
+    "process:allow-restart",
+    "process:allow-exit",
+    "clipboard-manager:allow-write-text",
+    "os:default",
+    "updater:default",
+    "opener:default",
+    "opener:allow-open-url",
+    "opener:allow-open-path",
+    "core:event:default",
+    "deep-link:default",
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [
+        {
+          "path": "$HOME/.cache/nym-vpn-app/log"
+        },
+        {
+          "path": "$HOME/.var/app/net.nymtech.NymVPN/cache/nym-vpn-app/log"
+        },
+        {
+          "path": "$HOME\\AppData\\Local\\nym-vpn-app\\log"
+        },
+        {
+          "path": "C:\\ProgramData\\nym-vpnd\\log"
+        },
+        {
+          "path": "/var/log/nym-vpnd"
+        }
+      ]
+    },
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled",
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "nym-exclude",
+          "cmd": "nym-exclude",
+          "args": true
+        }
+      ]
+    }
+  ]
+}

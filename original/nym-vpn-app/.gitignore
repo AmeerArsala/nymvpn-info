@@ -1,0 +1,39 @@
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+yarn.lock
+
+public/licenses-*.json
+
+.env
+
+# translations
+src/i18n/**
+!src/i18n/en/
+!src/i18n/resources/
+!src/i18n/config.ts
+!src/i18n/index.ts
+!src/i18n/types.ts
+
+.claude/settings.local.json

@@ -1,0 +1,22 @@
+<!doctype html>
+<html
+  lang="en"
+  dir="ltr"
+  class="font-rendering text-[14px] tracking-wide antialiased"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NymVPN</title>
+    <link href="/src/styles.css" rel="stylesheet" />
+  </head>
+
+  <!-- overflow-hidden is needed during splash animation to avoid scrollbar to shows up
+   when root font size is restored from user saved preferences -->
+  <body class="h-screen overflow-hidden">
+    <div id="root" class="h-full font-sans"></div>
+    <script type="module" src="/src/dev.ts"></script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+import { useCallback } from 'react';
+import clsx from 'clsx';
+import { Collapsible } from '@base-ui-components/react';
+import { SelectedKind, UiCountry, UiRegion } from '../../../types/node';
+import { useNodeListState } from '../../../store/nodeListState';
+import LocationInfo from './LocationInfo';
+import FoldButton from './FoldButton';
+
+export type RowHeaderProps = {
+  hop: 'entry' | 'exit';
+  isSelected: SelectedKind;
+  node: UiCountry | UiRegion;
+  onClick: (node: UiCountry | UiRegion) => void;
+  sub?: boolean;
+  gwCount: number;
+  i18n: string;
+};
+
+function RowHeader({
+  isSelected,
+  hop,
+  onClick,
+  node,
+  gwCount,
+  i18n,
+  sub,
+}: RowHeaderProps) {
+  const { exit: exitNodeList, entry: entryNodeList } = useNodeListState();
+
+  const focused =
+    hop === 'entry' ? entryNodeList.focused : exitNodeList.focused;
+
+  const scrollToRowRef = useCallback(
+    (htmlElement: HTMLDivElement) => {
+      if (!htmlElement) return;
+      const isFocused =
+        focused?.type === node.nodeType &&
+        ((node.nodeType === 'country' && focused.key === node.code) ||
+          (node.nodeType === 'region' && focused.key === node.name));
+
+      if (isFocused) {
+        htmlElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }
+    },
+    [focused, node],
+  );
+
+  return (
+    <div
+      ref={scrollToRowRef}
+      className={clsx(
+        'flex flex-row items-center justify-between rounded-r-2xl',
+        !sub ? 'dark:bg-charcoal bg-white' : 'bg-gainsboro dark:bg-charcoal/60',
+        !sub
+          ? 'dark:hover:bg-charcoal/85 hover:bg-white/60'
+          : 'hover:bg-nordic-breeze hover:dark:bg-charcoal/75',
+      )}
+    >
+      <div
+        className={clsx(
+          'w-1.5 self-stretch rounded-r-sm',
+          (isSelected === hop || isSelected === 'entry-and-exit') &&
+            'bg-primary',
+          isSelected && isSelected !== hop && 'bg-background-secondary',
+        )}
+        data-selected={isSelected ? isSelected : 'none'}
+      />
+      <div
+        className={clsx('grow truncate overflow-hidden py-2')}
+        onClick={() => onClick(node)}
+      >
+        {node.nodeType === 'country' ? (
+          <LocationInfo node={node} name={i18n} gwCount={gwCount} />
+        ) : (
+          <LocationInfo node={node} name={node.name} gwCount={gwCount} />
+        )}
+      </div>
+      <Collapsible.Trigger
+        render={(props, state) => <FoldButton html={props} state={state} />}
+      />
+    </div>
+  );
+}
+
+export default RowHeader;

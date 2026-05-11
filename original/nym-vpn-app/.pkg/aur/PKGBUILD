@@ -1,0 +1,53 @@
+# Maintainer: Nym Technologies SA <contact@nymtech.net>
+
+pkgname=nym-vpn-app
+pkgver=0.1.0
+# upstream version
+_pkgver=
+_release_tag=
+pkgrel=1
+pkgdesc='NymVPN desktop client'
+arch=('x86_64')
+url='https://github.com/nymtech/nym-vpn-client'
+license=('GPL-3.0-only')
+depends=('gcc-libs' 'cairo' 'gtk3' 'webkit2gtk-4.1' 'gdk-pixbuf2' 'glib2' 'libsoup3' 'hicolor-icon-theme' 'libappindicator-gtk3' 'nym-vpnd')
+makedepends=('rust' 'cargo' 'protobuf' 'npm')
+provides=('nym-vpn-app')
+conflicts=('nym-vpn-app')
+# disable lto as optimizations are set in the cargo profile (Cargo.toml)
+# with lto enabled here, the build fails (because `zstd`)
+options=(!debug !lto)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$_release_tag.tar.gz"
+    'nym-vpn.desktop'
+    'nym-vpn.svg')
+sha256sums=()
+_srcdir="nym-vpn-client-$_release_tag"
+
+prepare() {
+  pushd "$_srcdir"
+
+  # rip off useless sources
+  rm -rf nym-vpn-android
+  rm -rf nym-vpn-apple
+  popd
+}
+
+build() {
+  pushd "$_srcdir/nym-vpn-app"
+
+  # install Js dependencies
+  npm i
+
+  export RUSTUP_TOOLCHAIN=stable
+  npm run tauri build -- --no-bundle
+}
+
+package() {
+  pushd "$_srcdir/nym-vpn-app"
+  install -Dm755 "src-tauri/target/release/nym-vpn-app" "$pkgdir/usr/bin/nym-vpn-app"
+  popd
+
+  install -Dm644 "nym-vpn.desktop" "$pkgdir/usr/share/applications/nym-vpn.desktop"
+  install -Dm644 "nym-vpn.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/nym-vpn.svg"
+}
+

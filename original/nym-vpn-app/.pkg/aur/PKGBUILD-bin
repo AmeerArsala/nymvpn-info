@@ -1,0 +1,29 @@
+# Maintainer: Nym Technologies SA <contact@nymtech.net>
+
+pkgname=nym-vpn-app-bin
+pkgver=0.1.0
+# upstream version
+_pkgver=
+_release_tag=
+pkgrel=1
+pkgdesc='NymVPN desktop client'
+arch=('x86_64')
+url='https://github.com/nymtech/nym-vpn-client'
+license=('GPL-3.0-only')
+depends=('gcc-libs' 'cairo' 'gtk3' 'webkit2gtk-4.1' 'gdk-pixbuf2' 'glib2' 'libsoup3' 'hicolor-icon-theme' 'libappindicator-gtk3' 'nym-vpnd')
+makedepends=()
+provides=('nym-vpn-app')
+conflicts=('nym-vpn-app')
+options=(!debug)
+source=("$url/releases/download/$_release_tag/nym-vpn_${_pkgver}_linux_x64"
+    'nym-vpn.desktop'
+    'nym-vpn.svg')
+sha256sums=()
+
+package() {
+  install -Dm755 "nym-vpn_${_pkgver}_linux_x64" "$pkgdir/usr/bin/nym-vpn-app"
+  install -Dm644 "nym-vpn.desktop" "$pkgdir/usr/share/applications/nym-vpn.desktop"
+  install -Dm644 "nym-vpn.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/nym-vpn.svg"
+}
+
+

@@ -1,0 +1,15 @@
+export { default as Settings } from './Settings';
+export { default as SettingsRouteIndex } from './SettingsRouteIndex';
+export * from './appearance';
+export * from './logs';
+export * from './legal';
+export * from './support';
+export * from './dev';
+export * from './data-privacy';
+export * from './anti-censorship';
+export * from './socks5';
+export * from './custom-dns';
+export * from './mixnet-tuning';
+export * from './account';
+export * from './diagnostic';
+export * from './split-tunneling';

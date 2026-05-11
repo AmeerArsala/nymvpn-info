@@ -1,0 +1,149 @@
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import { PageAnim } from '../../../../ui';
+import { CodeDependency } from '../../../../types';
+
+function LicenseDetails() {
+  const [license, setLicense] = useState<CodeDependency | null>(null);
+  const [language, setLanguage] = useState<'rust' | 'js' | null>(null);
+
+  const { t } = useTranslation('licenses');
+  const locationState = useLocation().state as {
+    license: CodeDependency;
+    language: string;
+  };
+
+  useEffect(() => {
+    if (locationState.license) {
+      setLicense(locationState.license);
+    }
+    if (locationState.language) {
+      setLanguage(locationState.language as 'rust' | 'js');
+    }
+  }, [locationState]);
+
+  const { licenses, name, repository, authors, version } = license || {};
+
+  const label = (label: string) => (
+    <p
+      className="text-text-secondary cursor-default truncate select-none"
+      data-testid={`license-details-label-${label.toLowerCase()}`}
+    >
+      {label}:
+    </p>
+  );
+
+  return (
+    <PageAnim
+      className="flex h-full flex-col"
+      data-testid="license-details-page"
+    >
+      {license ? (
+        <article
+          className="flex flex-col gap-4"
+          data-testid="license-details-content"
+        >
+          <div
+            className="flex flex-row items-center gap-4"
+            data-testid="license-details-name-section"
+          >
+            {label(t('name'))}
+            <p
+              className="truncate font-medium"
+              data-testid="license-details-name-value"
+            >
+              {name}
+            </p>
+          </div>
+          <div
+            className="flex flex-row items-center gap-4"
+            data-testid="license-details-version-section"
+          >
+            {label(t('version'))}
+            <p className="truncate" data-testid="license-details-version-value">
+              {version}
+            </p>
+          </div>
+          <div
+            className="flex flex-col gap-2"
+            data-testid="license-details-licenses-section"
+          >
+            {label(t('licenses'))}
+            {licenses && (
+              <ul data-testid="license-details-licenses-list">
+                {licenses.map((license) => (
+                  <li
+                    className="truncate"
+                    key={license}
+                    data-testid={`license-details-license-item-${license.replace(/\s+/g, '-').toLowerCase()}`}
+                  >
+                    {license}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div
+            className="flex flex-col gap-2"
+            data-testid="license-details-repository-section"
+          >
+            {label(t('repository'))}
+            {repository && (
+              <a
+                className="truncate hover:underline"
+                href={repository}
+                target="_blank"
+                rel="noreferrer"
+                data-testid="license-details-repository-link"
+              >
+                {repository}
+              </a>
+            )}
+          </div>
+
+          <div
+            className="flex flex-col gap-2"
+            data-testid="license-details-authors-section"
+          >
+            {label(t('authors'))}
+            {authors && (
+              <ul data-testid="license-details-authors-list">
+                {authors.map((author) => (
+                  <li
+                    className="truncate"
+                    key={author}
+                    data-testid={`license-details-author-item-${author.replace(/\s+/g, '-').toLowerCase().substring(0, 20)}`}
+                  >
+                    {author}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div
+            className="flex flex-row items-center gap-4"
+            data-testid="license-details-language-section"
+          >
+            {label(t('language'))}
+            <p
+              className="truncate italic"
+              data-testid="license-details-language-value"
+            >
+              {language === 'js' ? 'JavaScript' : 'Rust'}
+            </p>
+          </div>
+        </article>
+      ) : (
+        <span
+          className="text-text-secondary mt-4 cursor-default pl-4 italic select-none"
+          data-testid="license-details-no-data"
+        >
+          {t('no-data')}
+        </span>
+      )}
+    </PageAnim>
+  );
+}
+
+export default LicenseDetails;
