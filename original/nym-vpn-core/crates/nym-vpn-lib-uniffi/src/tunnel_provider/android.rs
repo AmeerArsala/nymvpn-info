@@ -1,0 +1,44 @@
+// Copyright 2024 - Nym Technologies SA <contact@nymtech.net>
+// SPDX-License-Identifier: GPL-3.0-only
+
+use std::{fmt::Debug, os::fd::RawFd, sync::Arc};
+
+use super::tunnel_settings::TunnelNetworkSettings;
+use crate::VpnError;
+
+/// Abstract Android tunnel provider.
+#[uniffi::export(with_foreign)]
+pub trait AndroidTunProvider: Send + Sync + Debug {
+    /// Bypass VPN for a given socket.
+    fn bypass(&self, socket: i32);
+
+    /// Configure VPN tunnel with the given settings returning a file descriptor to tunnel device that can be used to read and write packets.
+    fn configure_tunnel(&self, config: TunnelNetworkSettings) -> Result<RawFd, VpnError>;
+}
+
+/// Adapter type for `nym_vpn_lib::tun_provider::AndroidTunProvider`
+#[derive(Debug, Clone)]
+pub struct AndroidTunProviderImpl {
+    inner: Arc<dyn AndroidTunProvider>,
+}
+
+impl AndroidTunProviderImpl {
+    pub fn new(inner: Arc<dyn AndroidTunProvider>) -> Self {
+        Self { inner }
+    }
+}
+
+impl nym_vpn_lib::tunnel_provider::AndroidTunProvider for AndroidTunProviderImpl {
+    fn bypass(&self, socket: i32) {
+        self.inner.bypass(socket);
+    }
+
+    fn configure_tunnel(
+        &self,
+        config: nym_vpn_lib::tunnel_provider::TunnelSettings,
+    ) -> std::io::Result<RawFd> {
+        self.inner
+            .configure_tunnel(config.into())
+            .map_err(|e| std::io::Error::other(e.to_string()))
+    }
+}

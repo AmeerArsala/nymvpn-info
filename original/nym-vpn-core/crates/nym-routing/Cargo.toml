@@ -1,0 +1,49 @@
+[package]
+name = "nym-routing"
+version.workspace = true
+authors.workspace = true
+repository.workspace = true
+license.workspace = true
+edition.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+thiserror.workspace = true
+futures.workspace = true
+ipnetwork.workspace = true
+tracing.workspace = true
+tokio = { workspace = true, features = [
+    "process",
+    "rt-multi-thread",
+    "net",
+    "io-util",
+    "time",
+    "sync",
+    "macros",
+] }
+
+[target.'cfg(not(target_os="android"))'.dependencies]
+nym-common.workspace = true
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc.workspace = true
+rtnetlink.workspace = true
+
+[target.'cfg(target_os = "macos")'.dependencies]
+bitflags.workspace = true
+libc.workspace = true
+nix = { workspace = true, features = ["socket", "fs", "net"] }
+system-configuration.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+nym-windows.workspace = true
+widestring.workspace = true
+
+[target.'cfg(windows)'.dependencies.windows]
+workspace = true
+features = ["Win32_NetworkManagement_Ndis", "Win32_Globalization"]
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }

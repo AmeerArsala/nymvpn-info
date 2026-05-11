@@ -1,0 +1,72 @@
+[package]
+name = "nym-split-tunnel"
+version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[features]
+cgroup2 = ["dep:nym-firewall"]
+
+[dependencies]
+futures-util.workspace = true
+libc.workspace = true
+nix = { workspace = true, features = ["net"] }
+ipnetwork.workspace = true
+pnet_packet.workspace = true
+tun = { workspace = true, features = ["async"] }
+thiserror.workspace = true
+tracing.workspace = true
+tokio = { workspace = true, features = ["test-util", "fs"] }
+tokio-util.workspace = true
+
+nym-platform-metadata.workspace = true
+nym-routing.workspace = true
+nym-macos.workspace = true
+nym-firewall-config.workspace = true
+nym-common.workspace = true
+nym-ifconfig.workspace = true
+nym-vpn-lib-types.workspace = true
+
+[dev-dependencies]
+pretty_assertions.workspace = true
+
+# Windows-specific dependencies
+[target.'cfg(target_os = "windows")'.dependencies]
+bitflags.workspace = true
+memoffset.workspace = true
+nym-windows.workspace = true
+windows-service.workspace = true
+windows = { workspace = true, features = ["Win32_Foundation"] }
+windows-sys = { workspace = true, features = [
+    "Win32_Foundation",
+    "Win32_Globalization",
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_System_Diagnostics_ToolHelp",
+    "Win32_System_Ioctl",
+    "Win32_System_IO",
+    "Win32_System_ProcessStatus",
+] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+bytes.workspace = true
+netlink-sys = { workspace = true, features = ["tokio_socket"] }
+mnl = { workspace = true, features = ["mnl-1-0-4"] }
+# NOTE: the libnftnl version specified in `features`
+# MUST match the version that we link against
+nftnl = { workspace = true, features = ["nftnl-1-2-0"] }
+nix = { workspace = true, features = ["fs", "mount", "process"] }
+nym-cgroup.workspace = true
+nym-dbus.workspace = true
+nym-firewall = { workspace = true, optional = true }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+endpoint-sec = { workspace = true, features = ["macos_11_0_0"] }
+pcap = { workspace = true, features = ["capture-stream"] }

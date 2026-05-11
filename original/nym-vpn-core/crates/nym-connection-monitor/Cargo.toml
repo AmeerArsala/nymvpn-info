@@ -1,0 +1,35 @@
+[package]
+name = "nym-connection-monitor"
+version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+async-trait.workspace = true
+futures = { workspace = true }
+nix = { workspace = true, features = ["net"] }
+surge-ping = { workspace = true }
+socket2.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["macros", "rt"] }
+tokio-util.workspace = true
+tracing.workspace = true
+nym-common.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = [
+    "macros",
+    "rt",
+    "time",
+    "test-util",
+    "io-util",
+] }
+pretty_assertions.workspace = true
+tracing-test.workspace = true

@@ -1,0 +1,37 @@
+[package]
+name = "nym-vpnc"
+description = "NymVPN command-line client"
+version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+anyhow.workspace = true
+celes.workspace = true
+clap = { workspace = true, features = ["derive", "wrap_help"] }
+serde_json.workspace = true
+tabled.workspace = true
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
+tokio-stream.workspace = true
+
+nym-diagnostic.workspace = true
+nym-vpn-proto = { workspace = true, features = ["conversions", "rpc_client"] }
+nym-vpn-lib-types = { workspace = true, features = ["serde"] }
+
+# Debian
+[package.metadata.deb]
+name = "nym-vpnc"
+extended-description = '''NymVPN is a vpn service that uses the Nym mixnet.
+
+This package contains the nym-vpnc binary, which is a CLI application used to interact with the nym-vpnd daemon.'''
+recommends = "nym-vpnd"
+revision = ""
+maintainer-scripts = "debian"
+systemd-units = { enable = false }
